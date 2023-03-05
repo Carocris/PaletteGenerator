@@ -3,7 +3,6 @@ const refreshBtn = document.querySelector('.refresh-btn');
 const paletteList = document.querySelector('.palette-list');
 let paletteHistory = JSON.parse(localStorage.getItem('paletteHistory')) || [];
 
-// Function to generate random hex color code
 function generateColor() {
   const hexValues = '0123456789ABCDEF';
   let color = '#';
@@ -13,12 +12,11 @@ function generateColor() {
   return color;
 }
 
-// Function to generate a new palette
 function generatePalette() {
   let palette = [];
   colors.forEach((color) => {
     let hexValue = generateColor();
-    // Check if the hexValue is already in the palette
+
     while (palette.includes(hexValue)) {
       hexValue = generateColor();
     }
@@ -29,14 +27,12 @@ function generatePalette() {
   return palette;
 }
 
-// Function to save a palette to local storage
 function savePalette(paletteName, paletteColors) {
   paletteHistory.push({ name: paletteName, colors: paletteColors });
   localStorage.setItem('paletteHistory', JSON.stringify(paletteHistory));
   renderPaletteList();
 }
 
-// Function to render the palette list
 function renderPaletteList() {
   paletteList.innerHTML = '';
   paletteHistory.forEach((palette, index) => {
@@ -51,7 +47,7 @@ function renderPaletteList() {
       const colorBox = document.createElement('div');
       colorBox.style.backgroundColor = color;
       colorBox.classList.add('palette-color-box');
-      // Add event listener to show the palette when clicked
+
       colorBox.addEventListener('click', () => {
         showPalette(palette, colorBox.style.backgroundColor);
       });
@@ -63,7 +59,6 @@ function renderPaletteList() {
   });
 }
 
-// Function to show a palette when clicked in the palette list
 function showPalette(palette, selectedColor) {
   colors.forEach((color) => {
     color.style.display = 'flex';
@@ -77,17 +72,14 @@ function showPalette(palette, selectedColor) {
   });
 }
 
-// Function to clear the palette history
 function clearHistory() {
   paletteHistory = [];
   localStorage.removeItem('paletteHistory');
   renderPaletteList();
 }
 
-// Event listener for the refresh button
 refreshBtn.addEventListener('click', generatePalette);
 
-// Event listener for clicking on a color
 colors.forEach((color) => {
   color.addEventListener('click', () => {
     const paletteName = prompt('Ingrese un nombre para su paleta:');
@@ -98,12 +90,9 @@ colors.forEach((color) => {
   });
 });
 
-// Event listener for the clear history button
 const clearHistoryBtn = document.querySelector('.clear-history-btn');
 clearHistoryBtn.addEventListener('click', clearHistory);
 
-// Initial render of the palette list
 renderPaletteList();
 
-// Generate initial palette
 generatePalette();
