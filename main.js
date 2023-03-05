@@ -1,7 +1,3 @@
-# PaletteGenerator
-Palette
-
-
 const colors = document.querySelectorAll('.color');
 const refreshBtn = document.querySelector('.refresh-btn');
 const paletteList = document.querySelector('.palette-list');
@@ -57,7 +53,7 @@ function renderPaletteList() {
       colorBox.classList.add('palette-color-box');
       // Add event listener to show the palette when clicked
       colorBox.addEventListener('click', () => {
-        showPalette(palette, colorBox);
+        showPalette(palette, colorBox.style.backgroundColor);
       });
       paletteColors.appendChild(colorBox);
     });
@@ -68,17 +64,24 @@ function renderPaletteList() {
 }
 
 // Function to show a palette when clicked in the palette list
-function showPalette(palette, excludedColorBox) {
+function showPalette(palette, selectedColor) {
   colors.forEach((color) => {
     color.style.display = 'flex';
     const hexValue = color.querySelector('.hex-value').textContent;
     if (palette.colors.includes(hexValue)) {
       color.style.display = 'none';
     }
-    if (excludedColorBox && excludedColorBox.style.backgroundColor === hexValue) {
-      color.style.display = 'none';
+    if (selectedColor && selectedColor === hexValue) {
+      color.querySelector('.rect-box').style.backgroundColor = hexValue;
     }
   });
+}
+
+// Function to clear the palette history
+function clearHistory() {
+  paletteHistory = [];
+  localStorage.removeItem('paletteHistory');
+  renderPaletteList();
 }
 
 // Event listener for the refresh button
@@ -86,7 +89,7 @@ refreshBtn.addEventListener('click', generatePalette);
 
 // Event listener for clicking on a color
 colors.forEach((color) => {
-  color.addEventListener('click', (event) => {
+  color.addEventListener('click', () => {
     const paletteName = prompt('Ingrese un nombre para su paleta:');
     if (paletteName) {
       const paletteColors = Array.from(colors).map((color) => color.querySelector('.hex-value').textContent);
@@ -95,33 +98,12 @@ colors.forEach((color) => {
   });
 });
 
-// Event listener for clicking on a palette in the palette list
-paletteList.addEventListener('click', (event) => {
-  const paletteItem = event.target.closest('.palette-item');
-  if (paletteItem) {
-    const paletteName = paletteItem.querySelector('.palette-name').textContent;
-    const paletteColors = Array.from(paletteItem.querySelectorAll('.palette-color-box')).map((colorBox) => colorBox.style.backgroundColor);
-    colors.forEach((color) => {
-      const hexValue = color.querySelector('.hex-value').textContent;
-      if (paletteColors.includes(hexValue)) {
-        color.querySelector('.rect-box').style.backgroundColor = hexValue;
-      }
-    });
-  }
-});
+// Event listener for the clear history button
+const clearHistoryBtn = document.querySelector('.clear-history-btn');
+clearHistoryBtn.addEventListener('click', clearHistory);
 
 // Initial render of the palette list
 renderPaletteList();
 
 // Generate initial palette
 generatePalette();
-
-const clearHistoryBtn = document.querySelector('.clear-history-btn');
-clearHistoryBtn.addEventListener('click', clearHistory);
-
-function clearHistory() {
-    paletteHistory = [];
-    localStorage.removeItem('paletteHistory');
-    renderPaletteList();
-  }
-  
